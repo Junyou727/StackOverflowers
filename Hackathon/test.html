@@ -1,65 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Building Energy Data Submission</title>
-	<link rel="stylesheet" href="./test.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solar Optimization Prototype</title>
+    <link rel="stylesheet" href="test.css">
 </head>
 <body>
-	<div class="container">
-		<h1>🏢 Building Energy Data</h1>
-        
-		<form id="buildingForm">
-			<div class="form-group">
-				<label for="buildingName">Building Name *</label>
-				<input type="text" id="buildingName" name="building_name" placeholder="e.g., Main Office Building" required>
-			</div>
+    <div class="hero">
+        <h1 class="title">Solar Optimization Prototype</h1>
+        <p class="subtitle">
+            Homeowners and small businesses struggle to optimize solar energy usage due to unpredictable weather, unclear cost-benefit analysis, and lack of insight into selling excess energy.<br><br>
+            This prototype estimates cost savings, maximizes ROI, and manages energy selling using AI-driven planning.
+        </p>
+    </div>
 
-			<div class="form-group">
-				<label for="location">Location (city or lat,lon)</label>
-				<input type="text" id="location" name="location" placeholder="e.g., Singapore or 1.3521,103.8198">
-			</div>
+    <div class="feature-circle-container">
+        <div class="feature-circle" onclick="location.href='#feature1'">Solar Planning</div>
+        <div class="feature-circle" onclick="location.href='#feature2'">Energy Selling</div>
+        <div class="feature-circle" onclick="location.href='#feature3'">Weather & Savings</div>
+    </div>
 
-			<div class="form-group">
-				<label for="roofArea">Roof Area (m²)</label>
-				<input type="number" id="roofArea" name="roof_area_m2" placeholder="e.g., 250" min="0" step="0.1">
-			</div>
+    <!-- Feature 1 Section -->
+    <section id="feature1" class="feature-section">
+        <h2>Feature 1: Solar Energy Planning</h2>
+        <form id="solarPlanningForm" class="form-section">
+            <div class="form-group">
+                <label>Building Name</label>
+                <input type="text" name="building_name" placeholder="Home/ Office/ School" >
+            </div>
+            <div class="form-group">
+                <label>Location (State/City)</label>
+                <input type="text" name="location" placeholder="Kuala Lumpur"/>
+            </div>
+            <div class="form-group">
+                <label>Roof Area (m²)</label>
+                <input type="number" name="roof_area_m2" step="0.1" />
+            </div>
+            <div class="form-group">
+                <label>Roof Orientation (°)</label>
+                <input type="number" name="roof_orientation" placeholder="Optional"/>
+            </div>
+            <div class="form-group">
+                <label>Monthly Consumption (kWh)</label>
+                <input type="number" name="monthly_consumption_kwh" step="0.1" />
+            </div>
+            <div class="form-group">
+                <label>Budget (RM)</label>
+                <input type="number" name="installation_cost" />
+            </div>
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+        <div class="output-box">Output (from n8n): Feature 1 Results Will Appear Here</div>
+    </section>
 
-			<div class="form-group">
-				<label for="monthlyConsumption">Monthly Consumption (kWh)</label>
-				<input type="number" id="monthlyConsumption" name="monthly_consumption_kwh" placeholder="e.g., 12000" min="0" step="0.1">
-			</div>
+    <!-- Feature 2 Section -->
+    <section id="feature2" class="feature-section">
+        <h2>Feature 2: Energy Selling</h2>
+        <form id="energySellingForm" class="form-section">
+            <div class="form-group">
+                <label>Current Battery Capacity (kWh)</label>
+                <input type="number" name="battery_capacity" />
+            </div>
+            <div class="form-group">
+                <label>Panel Capacity (kW)</label>
+                <input type="number" name="panel_capacity" />
+            </div>
+            <div class="form-group">
+                <label>Electricity Sell-back Rate (RM/kWh)</label>
+                <input type="number" name="sell_rate" step="0.01" />
+            </div>
+            <div class="form-group">
+                <label>Average Usage (kWh/day)</label>
+                <input type="number" name="avg_usage" step="0.1" />
+            </div>
+            <div class="form-group">
+                <label>Government Incentive (Optional)</label>
+                <input type="text" name="gov_incentive" />
+            </div>
+            <button type="submit" class="submit-btn">Submit Feature 2</button>
+        </form>
+        <div class="output-box">Output (from n8n): Feature 2 Results Will Appear Here</div>
+    </section>
 
-			<!-- Removed Number of PCs and AC Units fields as requested -->
+    <!-- Feature 3 Section (Reserved) -->
+    <section id="feature3" class="feature-section">
+        <h2>Feature 3: Weather & Savings Forecast</h2>
+        <p>Reserved for future expansion — Weather scenarios + savings prediction UI.</p>
+        <form id="predictiveForm" class="form-section">
+            <div class="form-group-predict">
+                <label for="state">Choose your Location:</label>
+                <select name="state" id="state">
+                    <option value="0">Kuala Lumpur</option>
+                    <option value="1">Putrajaya</option>
+                    <option value="2">Labuan</option>
+                    <option value="3">Johor</option>
+                    <option value="4">Kedah</option>
+                    <option value="5">Kelantan</option>
+                    <option value="6">Melaka</option>
+                    <option value="7">Negeri Sembilan</option>
+                    <option value="8">Pahang</option>
+                    <option value="9">Perak</option>
+                    <option value="10">Perlis</option>
+                    <option value="11">Penang</option>
+                    <option value="12">Sabah</option>
+                    <option value="13">Sarawak</option>
+                    <option value="14">Selangor</option>
+                    <option value="15">Terengganu</option>
+                </select>
+            </div>
+            <button type="submit" class="submit-btn">Submit Feature 2</button>
+        </form>
+        <div class="output-box">Output (from n8n): Feature 3 Results Will Appear Here</div>
+    </section>
 
-			<button type="submit">Submit Data</button>
-		</form>
-        
-		<div id="status" class="status"></div>
-        
-		<div id="responseSection" class="response-section">
-			<h3>Response from n8n:</h3>
-			<div id="responseContent" class="response-content"></div>
+	<script src="test.js" defer></script>
 
-			<div id="solarSummary" style="margin-top:16px; display:none;">
-				<h4>Solar Summary</h4>
-				<div id="solarSummaryContent" class="response-content"></div>
-			</div>
-
-			<div id="batterySummary" style="margin-top:16px; display:none;">
-				<h4>Battery Summary</h4>
-				<div id="batterySummaryContent" class="response-content"></div>
-			</div>
-
-			<div id="scenariosContainer" style="margin-top:16px; display:none;">
-				<h4>Weather Scenarios</h4>
-				<div id="scenariosContent" class="response-content"></div>
-			</div>
-		</div>
-	</div>
-    
-	<script src="./test.js" defer></script>
 </body>
 </html>
-
