@@ -1,7 +1,7 @@
 // ==============================
 // CONFIG
 // ==============================
-const WEBHOOK_URL = "https://zxjm2505.app.n8n.cloud/webhook/as";
+const WEBHOOK_URL = "https://zxjm2505.app.n8n.cloud/webhook-test/as";
 
 // ==============================
 // FORM REFERENCES
@@ -39,12 +39,12 @@ async function sendToWebhook(payload, outputBox) {
             }
         }
         html += "</ul>";
-
+        html += `<br></br>`
         html += "<h3>AI Analysis</h3>";
-        html += `<p>${out.analysis || "N/A"}</p>`;
-
+        html += `<p>${out.analysis}</p>`;
+        html += `<br></br>`
         html += "<h3>AI Recommendation</h3>";
-        html += `<p>${out.recommendation || "N/A"}</p>`;
+        html += `<p>${out.recommendation}</p>`;
 
         outputBox.innerHTML = html;
 
@@ -69,8 +69,6 @@ solarForm.addEventListener("submit", async (e) => {
             Roof_Orientation: fd.get("roof_orientation") ,
             Monthly_Consumption_kWh: Number(fd.get("monthly_consumption_kwh")),
             Installation_Cost: Number(fd.get("installation_cost")),
-            analysis: "",
-            recommendation: ""
         }
     };
 
@@ -92,8 +90,6 @@ energyForm.addEventListener("submit", async (e) => {
             sell_rate: Number(fd.get("sell_rate") || 0),
             avg_usage: Number(fd.get("avg_usage") || 0),
             gov_incentive: Number(fd.get("gov_incentive") || 0),
-            analysis: "",
-            recommendation: ""
         }
     };
 
