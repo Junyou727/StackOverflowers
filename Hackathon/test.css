@@ -8,7 +8,7 @@
 }
 
 body {
-    background: radial-gradient(circle at top, #4a47ff, #1b1b2f);
+    background: radial-gradient(circle at top, #302eb5, #1b1b2f);
     color: #fff;
     overflow-x: hidden;
     padding-bottom: 50px;
@@ -16,7 +16,7 @@ body {
 
 ::placeholder {
     font-size: 90%;
-    color: #5a5a5a;
+    color: #d8d8d8;
     font-style: italic;
 }
 
@@ -42,8 +42,15 @@ body {
 }
 
 @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-30px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ===== FEATURE CIRCLES ===== */
@@ -93,9 +100,17 @@ body {
 }
 
 @keyframes floatPulse {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0); }
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
 }
 
 /* ===== FEATURE SECTIONS ===== */
@@ -118,8 +133,15 @@ body {
 }
 
 @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(40px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ===== FORM STYLING ===== */
@@ -160,7 +182,8 @@ body {
 }
 
 .form-group-predict label {
-    display: inline-block; /* keeps label on the same line */
+    display: inline-block;
+    /* keeps label on the same line */
     margin-right: 10px;
     font-weight: bold;
     vertical-align: middle;
