@@ -16,11 +16,11 @@ const feature2Output = document.querySelector('#feature2 .output-box');
 // ==============================
 // GENERIC SEND FUNCTION
 // ==============================
-async function sendToWebhook(payload, outputBox) {
+async function sendToWebhook(payload, outputBox, webhookUrl = WEBHOOK_URL) {
     outputBox.innerHTML = "<em>Sending...</em>";
 
     try {
-        const res = await fetch(WEBHOOK_URL, {
+        const res = await fetch(webhookUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
@@ -184,8 +184,64 @@ if (solarForm) {
         };
 
         console.log("Sending solar data:", data);
-        await sendToWebhook(data, feature1Output);
+        await sendToWebhook(data, feature1Output, WEBHOOK_URL);
     });
+}
+
+// ==============================
+// HARDCODED ENERGY SELLING CALCULATION
+// ==============================
+function calculateEnergySelling(data) {
+    const { battery_capacity, panel_capacity, sell_rate, avg_usage, gov_incentive } = data;
+    
+    // Constants for calculations
+    const DAYS_PER_MONTH = 30;
+    const DAYS_PER_YEAR = 365;
+    const AVG_SUNLIGHT_HOURS = 5; // Average peak sunlight hours in Malaysia
+    
+    // Calculate daily energy production (kWh/day)
+    const dailyProduction = panel_capacity * AVG_SUNLIGHT_HOURS;
+    
+    // Calculate excess energy available for selling
+    const dailyExcess = Math.max(0, dailyProduction - avg_usage);
+    const monthlyExcess = dailyExcess * DAYS_PER_MONTH;
+    const yearlyExcess = dailyExcess * DAYS_PER_YEAR;
+    
+    // Calculate revenue from selling excess energy
+    const monthlyRevenue = monthlyExcess * sell_rate;
+    const yearlyRevenue = yearlyExcess * sell_rate;
+    
+    // Calculate self-consumption savings
+    const selfConsumption = Math.min(dailyProduction, avg_usage);
+    const monthlySelfConsumptionSavings = selfConsumption * DAYS_PER_MONTH * sell_rate;
+    const yearlySelfConsumptionSavings = selfConsumption * DAYS_PER_YEAR * sell_rate;
+    
+    // Total benefits
+    const totalMonthlyBenefit = monthlyRevenue + monthlySelfConsumptionSavings + ((gov_incentive || 0) / 12);
+    const totalYearlyBenefit = yearlyRevenue + yearlySelfConsumptionSavings + (gov_incentive || 0);
+    
+    // Calculate battery utilization
+    const batteryDays = battery_capacity > 0 ? (battery_capacity / avg_usage).toFixed(1) : 'N/A';
+    
+    // Payback analysis
+    const estimatedInstallationCost = panel_capacity * 4000;
+    const paybackYears = totalYearlyBenefit > 0 ? (estimatedInstallationCost / totalYearlyBenefit).toFixed(1) : 'N/A';
+    
+    return {
+        dailyProduction: dailyProduction.toFixed(2),
+        dailyExcess: dailyExcess.toFixed(2),
+        monthlyExcess: monthlyExcess.toFixed(2),
+        yearlyExcess: yearlyExcess.toFixed(2),
+        monthlyRevenue: monthlyRevenue.toFixed(2),
+        yearlyRevenue: yearlyRevenue.toFixed(2),
+        monthlySelfConsumption: monthlySelfConsumptionSavings.toFixed(2),
+        yearlySelfConsumption: yearlySelfConsumptionSavings.toFixed(2),
+        totalMonthlyBenefit: totalMonthlyBenefit.toFixed(2),
+        totalYearlyBenefit: totalYearlyBenefit.toFixed(2),
+        batteryDays: batteryDays,
+        estimatedCost: estimatedInstallationCost.toFixed(2),
+        paybackYears: paybackYears
+    };
 }
 
 // ==============================
@@ -205,7 +261,87 @@ if (energyForm) {
             gov_incentive: Number(fd.get("gov_incentive") || 0),
         };
 
-        console.log("Sending energy data:", data);
-        await sendToWebhook(data, feature2Output);
+        console.log("Calculating energy selling data:", data);
+        
+        // Show loading state
+        feature2Output.innerHTML = "<em>Calculating...</em>";
+        
+        // Validate inputs
+        if (!data.panel_capacity || !data.sell_rate || !data.avg_usage) {
+            feature2Output.innerHTML = `
+                <div style="background: #f8d7da; padding: 15px; border-radius: 5px; border-left: 4px solid #dc3545; color: #721c24;">
+                    <h3 style="margin-top: 0; color: #721c24;">❌ Missing Required Fields</h3>
+                    <p style="color: #721c24;">Please fill in Panel Capacity, Sell-back Rate, and Average Usage.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Calculate results using hardcoded function
+        const result = calculateEnergySelling(data);
+        
+        // Display results in a clean table format
+        let html = `
+            <div style="background: #ffffff; padding: 20px; border-radius: 8px; border: 2px solid #28a745; color: #333;">
+                <h3 style="margin-top: 0; color: #28a745; border-bottom: 2px solid #28a745; padding-bottom: 10px;">⚡ Energy Calculation Results</h3>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <tr style="background: #f8f9fa;">
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; font-weight: bold;">Daily Production</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; text-align: right;">${result.dailyProduction} kWh</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; font-weight: bold;">Daily Excess (Sellable)</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; text-align: right; color: ${parseFloat(result.dailyExcess) > 0 ? '#28a745' : '#dc3545'}; font-weight: bold;">${result.dailyExcess} kWh</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; font-weight: bold;">Monthly Excess</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; text-align: right;">${result.monthlyExcess} kWh</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; font-weight: bold;">Yearly Excess</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; text-align: right;">${result.yearlyExcess} kWh</td>
+                    </tr>
+                    <tr style="background: #e7f5ff;">
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; font-weight: bold; color: #0c5460;">💰 Monthly Revenue (Excess Sales)</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; text-align: right; color: #0c5460; font-weight: bold;">RM ${result.monthlyRevenue}</td>
+                    </tr>
+                    <tr style="background: #e7f5ff;">
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; font-weight: bold; color: #0c5460;">💰 Yearly Revenue (Excess Sales)</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; text-align: right; color: #0c5460; font-weight: bold;">RM ${result.yearlyRevenue}</td>
+                    </tr>
+                    <tr style="background: #d4edda;">
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; font-weight: bold; color: #155724;">💡 Monthly Self-Consumption Savings</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; text-align: right; color: #155724; font-weight: bold;">RM ${result.monthlySelfConsumption}</td>
+                    </tr>
+                    <tr style="background: #d4edda;">
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; font-weight: bold; color: #155724;">💡 Yearly Self-Consumption Savings</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; text-align: right; color: #155724; font-weight: bold;">RM ${result.yearlySelfConsumption}</td>
+                    </tr>
+                    <tr style="background: #fff3cd;">
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; font-weight: bold; color: #856404;">🎯 Total Monthly Benefit</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; text-align: right; color: #856404; font-weight: bold; font-size: 1.1em;">RM ${result.totalMonthlyBenefit}</td>
+                    </tr>
+                    <tr style="background: #fff3cd;">
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; font-weight: bold; color: #856404;">🎯 Total Yearly Benefit</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; text-align: right; color: #856404; font-weight: bold; font-size: 1.1em;">RM ${result.totalYearlyBenefit}</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; font-weight: bold;">🔋 Battery Backup Duration</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; text-align: right;">${result.batteryDays} days</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; font-weight: bold;">Estimated Installation Cost</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; text-align: right;">RM ${result.estimatedCost}</td>
+                    </tr>
+                    <tr style="background: #d1ecf1;">
+                        <td style="padding: 12px; font-weight: bold; color: #0c5460;">⏱️ Payback Period</td>
+                        <td style="padding: 12px; text-align: right; color: #0c5460; font-weight: bold; font-size: 1.1em;">${result.paybackYears} years</td>
+                    </tr>
+                </table>
+            </div>
+        `;
+        
+        feature2Output.innerHTML = html;
     });
 }
