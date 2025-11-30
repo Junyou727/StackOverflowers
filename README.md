@@ -82,9 +82,11 @@ Forecast energy production and rebates using predictive models.
 
 - **Frontend:** HTML, CSS, JavaScript  
 - **Backend:** FastAPI, Python  
-- **Machine Learning:** Scikit-learn (Random Forest Regressor)  
+- **Machine Learning:** Scikit-learn (Random Forest Regressor)
+- **AI Automation** n8n
+  <img width="970" height="528" alt="image" src="https://github.com/user-attachments/assets/6f08d0ed-a883-4d17-8a0e-ea3f4f5ec0dd" />
+- **Server:** Uvicorn
 - **Data Storage:** CSV datasets for weather & energy prediction  
-- **Server:** Uvicorn  
 
 ---
 ---
@@ -131,6 +133,4 @@ For questions or support, contact...
 2. Austin (austinteo111@gmail.com)
 3. Law Jun You (junyoulaw727@gmail.com)
 4. Ku Xiang Jin (kuxiangjin1004@gmail.com)
-
-
 
