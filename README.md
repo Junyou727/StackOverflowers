@@ -6,7 +6,7 @@ This prototype helps users **estimate savings, maximize ROI, and manage energy s
 
 ---
 ---
-# Limitations
+## Limitations
 - Limited database is prepared, but it could be done by using ```'full_weather.csv'``` available in ```Kaggle - Malaysia's Weather Data (1996-2024)``` and ```separate_database.ipynb```
 
 References: 
@@ -131,5 +131,6 @@ For questions or support, contact...
 2. Austin (austinteo111@gmail.com)
 3. Law Jun You (junyoulaw727@gmail.com)
 4. Ku Xiang Jin (kuxiangjin1004@gmail.com)
+
 
 
