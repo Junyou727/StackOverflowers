@@ -119,7 +119,7 @@ uvicorn main:app --reload --host 127.0.0.1 --port 8000
 
 5. **Open the frontend:**
 ```bash
-Open test.html in your browser.
+Open Solar/solar.html in your browser.
 ```
 
 ---
@@ -131,3 +131,4 @@ For questions or support, contact...
 2. Austin (austinteo111@gmail.com)
 3. Law Jun You (junyoulaw727@gmail.com)
 4. Ku Xiang Jin (kuxiangjin1004@gmail.com)
+
